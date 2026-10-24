@@ -21,6 +21,9 @@ model Event {
   location      String
   image         String
 
+  creatorId   String   @db.Uuid
+  creator     User     @relation(fields: [creatorId], references: [id])
+
   registrations Registration[]
 
   createdAt     DateTime       @default(now())
@@ -31,7 +34,9 @@ model User {
   id            String         @id @default(uuid()) @db.Uuid
   name          String
   email         String         @unique
+  password      String
 
+  createdEvents Event[]
   registrations Registration[]
 
   createdAt     DateTime       @default(now())
@@ -48,3 +53,4 @@ model Registration {
 
   @@unique([userId, eventId])
 }
+
