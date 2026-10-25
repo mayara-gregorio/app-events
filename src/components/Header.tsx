@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
@@ -10,7 +10,17 @@ import { Button } from "@/components/ui/button";
 export function Header() {
   const { user, isLoading, logout,  } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [leaving, setLeaving] = useState(false);
+
+  function handleBack() {
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+
+    router.push("/dashboard");
+  }
 
   async function handleLogout() {
     setLeaving(true);
@@ -38,7 +48,15 @@ export function Header() {
           )}
           {user && (
             <>
-              <Link href="/eventos" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
+              {pathname !== "/dashboard" && (
+                <Button
+                  onClick={handleBack}
+                  className="border border-[#10264D] bg-transparent px-4 py-2 text-[#10264D] hover:bg-[#10264D]/10"
+                >
+                  Voltar
+                </Button>
+              )}
+              <Link href="/events" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
                 Ver Eventos
               </Link>
               <Button onClick={handleLogout} className="rounded-md border border-[#10264D] bg-transparent px-4 py-2 text-[#10264D] hover:bg-[#10264D]/10">
