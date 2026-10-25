@@ -7,7 +7,7 @@ import { EventCard, type Event } from "@/components/event-card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function EventsPage() {
+export default function EventDetailsPage() {
   const [events, setEvents] = useState<Event[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
