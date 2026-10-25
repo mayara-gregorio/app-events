@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 
 export function Header() {
   const { user, isLoading, logout,  } = useAuth();
@@ -37,16 +38,25 @@ export function Header() {
         <nav className="flex flex-wrap items-center gap-1 text-sm">
           {!isLoading && !user && (
             <>
-            <Link href="/login" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
-              Entrar
+            <Link href="/events/create" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
+              Criar Evento
             </Link>
-            <Link href="/register" className="rounded-md border border-[#10264D] bg-transparent px-4 py-2 text-[#10264D] hover:bg-[#10264D]/10">
-              Criar conta
+            <Link href="/events" className="rounded-md border border-[#10264D] bg-transparent px-4 py-2 text-[#10264D] hover:bg-[#10264D]/10">
+              Meus Eventos
+            </Link>
+            <Link href="/registrations" className="rounded-md border border-[#10264D] bg-transparent px-4 py-2 text-[#10264D] hover:bg-[#10264D]/10">
+              Minhas Inscrições
+            </Link>
+            <Link href="/login" className="flex size-10 items-center justify-center rounded-full border hover:bg-gray-100">
+              <User size={20}/>
             </Link>
             </>
           )}
           {user && (
             <>
+              <Link href="/explore" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
+                Explorar
+              </Link>
               <Link href="/events" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
                 Meus Eventos
               </Link>

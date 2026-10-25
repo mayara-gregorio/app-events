@@ -16,7 +16,7 @@ export default function LoginPage() {
     }) {
         const message = await login(credentials)
         toast.success(message)
-        router.push("/dashboard")
+        router.push("/explore")
     }
 
     return (

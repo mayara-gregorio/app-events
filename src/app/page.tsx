@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { EventsExplorer } from "@/components/events-explore";
 
 const features = [
   { title: "Gestão completa", text: "Cadastre, edite e exclua eventos em poucos cliques." },
@@ -38,6 +39,14 @@ export default function HomePage() {
           </div>
         ))}
       </section>
+      <div className="mx-auto max-w-6xl px-4 py-12">
+        <EventsExplorer
+          title="Próximos eventos"
+          description="Veja o que vem por aí e inscreva-se."
+          limit={6}
+          seeAllHref="/explore"
+        />
+      </div>
     </div>
   );
 }
