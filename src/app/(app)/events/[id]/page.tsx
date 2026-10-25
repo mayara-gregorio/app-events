@@ -2,10 +2,16 @@ import { Suspense } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
 
-import  {EventDetailsPage} from "../../../../components/event-details"
+import EventDetailsPage from "./event-details"
 
+type Props = { params: Promise<{ id: string }> }
 
-export default function Page() {
+async function EventContent({ params }: Props) {
+  const { id } = await params
+  return <EventDetailsPage id={id} />
+}
+
+export default function Page({ params }: Props) {
   return (
     <Suspense
       fallback={
@@ -14,7 +20,7 @@ export default function Page() {
         </div>
       }
     >
-      <EventDetailsPage />
+      <EventContent params={params} />
     </Suspense>
   )
 }
