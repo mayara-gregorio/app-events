@@ -4,7 +4,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import EventDetailsPage from "./event-details"
 
-export default function Page() {
+type Props = { params: Promise<{ id: string }> }
+
+async function EventContent({ params }: Props) {
+  const { id } = await params
+  return <EventDetailsPage id={id} />
+}
+
+export default function Page({ params }: Props) {
   return (
     <Suspense
       fallback={
@@ -13,7 +20,7 @@ export default function Page() {
         </div>
       }
     >
-      <EventDetailsPage />
+      <EventContent params={params} />
     </Suspense>
   )
 }

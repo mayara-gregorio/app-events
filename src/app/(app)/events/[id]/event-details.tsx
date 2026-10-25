@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -45,8 +45,7 @@ type EventDetails = Event & {
   isRegistered: boolean
 }
 
-export default function EventDetailsPage() {
-  const { id } = useParams<{ id: string }>()
+export default function EventDetailsPage({ id }: { id: string }) {
   const router = useRouter()
 
   const [event, setEvent] = useState<EventDetails | null>(null)
