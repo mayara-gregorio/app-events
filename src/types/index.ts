@@ -1,5 +1,5 @@
 
-export interface EventItem {
+export type EventItem = {
   id: string;
   title: string;
   description: string;
@@ -11,7 +11,7 @@ export interface EventItem {
   updatedAt: string;
 }
 
-export interface EventInput {
+export type EventInput = {
   title: string;
   description: string;
   date: string;
@@ -20,7 +20,7 @@ export interface EventInput {
   imageUrl: string;
 }
 
-export interface RegistrationItem {
+export type RegistrationItem = {
   id: string;
   eventId: string;
   createdAt: string;
