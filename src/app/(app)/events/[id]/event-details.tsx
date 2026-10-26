@@ -210,6 +210,8 @@ export default function EventDetailsPage({ id }: { id: string }) {
                 <p className="font-medium">{event.creator.name}</p>
             </div>
             <div>
+                Adicionar botão para ver inscritos
+                
                 <p className="text-muted-foreground">Inscritos</p>
                 <p className="font-medium">{event.registrationsCount}</p>
             </div>
