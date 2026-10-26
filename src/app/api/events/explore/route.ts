@@ -9,24 +9,23 @@ export async function GET(request: Request) {
         const page = Number(searchParams.get("page")) || 1
 
         const porPagina = 20
-
-        let filtro = {}
-
-        if (search) {
-            filtro = {
-                OR: [
-                    { title: { contains: search, mode: "insensitive" } },
-                    { location: { contains: search, mode: "insensitive" } },
-                ],
-            }
-        }
+        const hoje = new Date()
+        hoje.setUTCHours(0, 0, 0, 0)
 
         const events = await prisma.event.findMany({
-            where: filtro,
+            where: {
+                date: { gte: hoje },
+                ...(search && {
+                    OR: [
+                    { title: { contains: search, mode: "insensitive" } },
+                    { location: { contains: search, mode: "insensitive" } },
+                    ],
+                }),
+            },
             orderBy: { date: "asc" },
             include: { creator: { select: { name: true } } },
-            take: porPagina,                
-            skip: (page - 1) * porPagina,   
+            take: porPagina,
+            skip: (page - 1) * porPagina,
         })
 
         const hasMore = events.length === porPagina
