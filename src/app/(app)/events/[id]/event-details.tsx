@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { formatDate, type Event } from "@/components/event-card"
+import { useAuth } from "@/hooks/use-auth"
 import {
   EventForm,
   type EventFormValues,
@@ -47,6 +48,7 @@ type EventDetails = Event & {
 
 export default function EventDetailsPage({ id }: { id: string }) {
   const router = useRouter()
+  const { user } = useAuth()
 
   const [event, setEvent] = useState<EventDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -153,7 +155,7 @@ export default function EventDetailsPage({ id }: { id: string }) {
         <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {error || "Evento não encontrado."}
         </p>
-        <Link href="/events" className={buttonVariants({ variant: "outline" })}>
+        <Link href="/explore" className={buttonVariants({ variant: "outline" })}>
           Voltar para os eventos
         </Link>
       </div>
@@ -165,7 +167,7 @@ export default function EventDetailsPage({ id }: { id: string }) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <Link href="/events" className={buttonVariants({ variant: "ghost" })}>
+      <Link href="/explore" className={buttonVariants({ variant: "ghost" })}>
         ← Voltar
       </Link>
 
@@ -227,6 +229,14 @@ export default function EventDetailsPage({ id }: { id: string }) {
                     Excluir
                 </Button>
                 </>
+            ) : !user ? (
+                <Button
+                  nativeButton={false}
+                  render={<Link href="/login" />}
+                  className="bg-[#10264D] text-white hover:bg-[#10264D]/90"
+                >
+                  Entre para se inscrever
+                </Button>
             ) : !isUpcoming ? (
                 <Button disabled>Evento encerrado</Button>
             ) : (

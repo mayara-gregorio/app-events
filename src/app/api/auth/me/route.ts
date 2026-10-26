@@ -1,20 +1,8 @@
 import { NextResponse } from "next/server"
 
 import { getCurrentUser } from "@/lib/auth"
-import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient } from "@/generated/prisma/client"
+import { prisma } from "@/lib/prisma"
 
-const globalForPrisma = globalThis as typeof globalThis & {
-    prisma?: PrismaClient
-}
-
-const connectionString = process.env.DATABASE_URL
-
-const prisma =
-    globalForPrisma.prisma ??
-    new PrismaClient({
-        adapter: new PrismaPg({ connectionString }),
-    })
 
 export async function GET() {
     const currentUser = await getCurrentUser()

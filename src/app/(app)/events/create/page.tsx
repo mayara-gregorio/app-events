@@ -32,7 +32,7 @@ export default function EventsCreatePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center gap-4 py-12">
+    <div className="flex min-h-screen flex-col py-12 gap-4">
       <EventForm onSubmit={handleCreateEvent} />
     </div>
   )

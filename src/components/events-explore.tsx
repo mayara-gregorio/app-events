@@ -29,48 +29,51 @@ export function EventsExplorer({
   useEffect(() => {
     let isCurrent = true
 
-    // Espera o usuário parar de digitar antes de buscar (debounce)
-    const timeout = setTimeout(
-      async () => {
-        setIsLoading(true)
-        setError("")
+    async function loadEvents() {
+      setIsLoading(true)
+      setError("")
 
-        try {
-          const params = new URLSearchParams()
+      try {
+        const response = await fetch("/api/events/explore")
+        const data = await response.json()
 
-          if (search.trim()) params.set("q", search.trim())
-          if (limit) params.set("limit", String(limit))
-
-          const response = await fetch(`/api/events/explore?${params}`)
-          const data = await response.json()
-
-          if (!response.ok) {
-            throw new Error(data.message)
-          }
-
-          if (isCurrent) {
-            setEvents(data.events)
-          }
-        } catch (err) {
-          if (isCurrent) {
-            setError(
-              err instanceof Error ? err.message : "Erro ao carregar eventos.",
-            )
-          }
-        } finally {
-          if (isCurrent) {
-            setIsLoading(false)
-          }
+        if (!response.ok) {
+          throw new Error(data.message)
         }
-      },
-      search ? 400 : 0,
-    )
+
+        if (isCurrent) {
+          setEvents(data.events)
+        }
+      } catch (err) {
+        if (isCurrent) {
+          setError(
+            err instanceof Error ? err.message : "Erro ao carregar eventos.",
+          )
+        }
+      } finally {
+        if (isCurrent) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadEvents()
 
     return () => {
       isCurrent = false
-      clearTimeout(timeout)
     }
-  }, [search, limit])
+  }, [])
+
+  const normalizedSearch = search.trim().toLocaleLowerCase("pt-BR")
+  const matchingEvents = events.filter(
+    (event) =>
+      !normalizedSearch ||
+      event.title.toLocaleLowerCase("pt-BR").includes(normalizedSearch) ||
+      event.location.toLocaleLowerCase("pt-BR").includes(normalizedSearch),
+  )
+  const visibleEvents = limit
+    ? matchingEvents.slice(0, limit)
+    : matchingEvents
 
   return (
     <section className="space-y-8">
@@ -114,7 +117,7 @@ export function EventsExplorer({
         </div>
       )}
 
-      {!isLoading && !error && events.length === 0 && (
+      {!isLoading && !error && visibleEvents.length === 0 && (
         <div className="rounded-xl border border-dashed p-12 text-center">
           <p className="text-muted-foreground">
             {search
@@ -134,9 +137,9 @@ export function EventsExplorer({
         </div>
       )}
 
-      {!isLoading && events.length > 0 && (
+      {!isLoading && visibleEvents.length > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
+          {visibleEvents.map((event) => (
             <Link key={event.id} href={`/events/${event.id}`}>
               <EventCard event={event} />
             </Link>

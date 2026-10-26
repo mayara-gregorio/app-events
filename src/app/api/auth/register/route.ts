@@ -1,9 +1,8 @@
-import { PrismaPg } from "@prisma/adapter-pg"
 import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { prisma } from "@/lib/prisma"
 
-import { PrismaClient } from "@/generated/prisma/client"
 
 const registerSchema = z.object({
   name: z.string().trim().min(2, "Digite seu nome completo."),
@@ -11,19 +10,6 @@ const registerSchema = z.object({
   password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
 })
 
-//isso declara uma instância global do prisma para não criar várias conexões
-const globalForPrisma = globalThis as typeof globalThis & {
-    prisma?: PrismaClient
-}
-
-const connectionString = process.env.DATABASE_URL
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  })
-  
 export async function POST(request: Request) {
   try {
     const body = await request.json()

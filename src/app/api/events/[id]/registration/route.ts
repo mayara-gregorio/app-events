@@ -2,21 +2,8 @@ import { NextResponse } from "next/server"
 
 import { getCurrentUser } from "@/lib/auth"
 import { findEvent } from "@/lib/events"
+import { prisma } from "@/lib/prisma"
 
-import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient } from "@/generated/prisma/client"
-
-const globalForPrisma = globalThis as typeof globalThis & {
-    prisma?: PrismaClient
-}
-
-const connectionString = process.env.DATABASE_URL
-
-const prisma =
-    globalForPrisma.prisma ??
-    new PrismaClient({
-        adapter: new PrismaPg({ connectionString }),
-    })
 type RouteContext = {
     params: Promise<{ id: string }>
 }
@@ -55,7 +42,6 @@ export async function POST(_request: Request, { params }: RouteContext) {
                 data: { userId: user.id, eventId: id },
             })
         } catch (error) {
-            // P2002 = violação do @@unique([userId, eventId])
             if ((error as { code?: string }).code === "P2002") {
                 return NextResponse.json({ message: "Você já está inscrito." }, { status: 409 })
             }

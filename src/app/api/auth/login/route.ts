@@ -1,28 +1,16 @@
-import { PrismaPg } from "@prisma/adapter-pg"
 import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { SignJWT } from "jose"
+import { prisma } from "@/lib/prisma"
 
-import { PrismaClient } from "@/generated/prisma/client"
 
 const loginSchema = z.object({
   email: z.email("Digite um e-mail válido."),
   password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
 })
 
-//isso declara uma instância global do prisma para não criar várias conexões
-const globalForPrisma = globalThis as typeof globalThis & {
-    prisma?: PrismaClient
-}
 
-const connectionString = process.env.DATABASE_URL
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  })
 
 function getSecret() {
   const secret = process.env.JWT_SECRET;

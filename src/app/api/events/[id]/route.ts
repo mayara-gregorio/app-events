@@ -1,21 +1,7 @@
 import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient } from "@/generated/prisma/client"
 import { findEvent } from "@/lib/events"
-
-
-const globalForPrisma = globalThis as typeof globalThis & {
-    prisma?: PrismaClient
-}
-
-const connectionString = process.env.DATABASE_URL
-
-const prisma =
-    globalForPrisma.prisma ??
-    new PrismaClient({
-        adapter: new PrismaPg({ connectionString }),
-    })
+import { prisma } from "@/lib/prisma"
 
 
 type RouteContext = {
@@ -23,14 +9,9 @@ type RouteContext = {
 }
 
 
-
 export async function GET(_request: Request, { params }: RouteContext) {
     try {
         const user = await getCurrentUser()
-
-        if (!user) {
-            return NextResponse.json({ message: "Não autenticado." }, { status: 401 })
-        }
 
         const { id } = await params
 
@@ -43,17 +24,19 @@ export async function GET(_request: Request, { params }: RouteContext) {
             include: {
                 creator: { select: { name: true } },
                 _count: { select: { registrations: true } },
-                registrations: { where: { userId: user.id }, select: { id: true } },
+                ...(user && {
+                    registrations: { where: { userId: user.id }, select: { id: true } },
+                }),
             },
         })
 
-        const { registrations, _count, ...data } = event
+        const { registrations = [], _count, ...data } = event
 
         return NextResponse.json({
             event: {
                 ...data,
                 registrationsCount: _count.registrations,
-                isOwner: event.creatorId === user.id,
+                isOwner: user ? event.creatorId === user.id : false,
                 isRegistered: registrations.length > 0,
             },
         })
