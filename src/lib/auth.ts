@@ -1,5 +1,5 @@
 import { cookies } from "next/headers"
-import { errors, jwtVerify } from "jose"
+import { jwtVerify } from "jose"
 
 export async function getCurrentUser() {
   const token = (await cookies()).get("auth-token")?.value
@@ -18,7 +18,7 @@ export async function getCurrentUser() {
     }
 
     return { id: payload.sub }
-  } catch (error) {
-    throw error
+  } catch {
+    return null
   }
 }

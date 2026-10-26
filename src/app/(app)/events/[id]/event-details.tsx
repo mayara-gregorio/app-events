@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { toast } from "sonner"
 
 import { formatDate, type Event } from "@/components/event-card"
@@ -26,6 +26,7 @@ import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -46,7 +47,7 @@ type EventDetails = Event & {
   isRegistered: boolean
 }
 
-export default function EventDetailsPage({ id }: { id: string }) {
+export default function EventDetailsPage({ id, inscritos }: { id: string; inscritos: ReactNode }) {
   const router = useRouter()
   const { user } = useAuth()
 
@@ -210,7 +211,6 @@ export default function EventDetailsPage({ id }: { id: string }) {
                 <p className="font-medium">{event.creator.name}</p>
             </div>
             <div>
-                Adicionar botão para ver inscritos
                 
                 <p className="text-muted-foreground">Inscritos</p>
                 <p className="font-medium">{event.registrationsCount}</p>
@@ -255,6 +255,9 @@ export default function EventDetailsPage({ id }: { id: string }) {
             )}
         </CardFooter>
       </Card>
+
+      {/* tabela de inscritos fica fora do card, só para o dono do evento */}
+      {event.isOwner && inscritos}
     {event.isOwner && (
         <>
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
@@ -301,6 +304,7 @@ export default function EventDetailsPage({ id }: { id: string }) {
                 </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
         </>
     )}
     </div>

@@ -14,6 +14,9 @@ export async function GET() {
         const events = await prisma.event.findMany({
             where: { creatorId: user.id },
             orderBy: { date: "asc" },
+            include: {
+                _count: { select: { registrations: true } },
+            },
         })
 
         return NextResponse.json({ events })

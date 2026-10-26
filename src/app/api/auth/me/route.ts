@@ -34,7 +34,9 @@ export async function PUT(request: Request) {
         }
 
         const body = await request.json()
-        const { name, email, currentPassword, newPassword } = body
+        const { name, currentPassword, newPassword } = body
+        // o login procura o e-mail em minúsculo, então salvamos assim também
+        const email = String(body.email || "").trim().toLowerCase()
 
         if (!name || !email) {
             return NextResponse.json({ message: "Preencha nome e e-mail." }, { status: 400 })
@@ -48,7 +50,7 @@ export async function PUT(request: Request) {
             return NextResponse.json({ message: "Este e-mail já está em uso." }, { status: 409 })
         }
 
-        const dados: any = { name, email }
+        const dados: { name: string; email: string; password?: string } = { name, email }
 
         if (newPassword) {
             const usuarioDoBanco = await prisma.user.findUnique({ where: { id: user.id } })

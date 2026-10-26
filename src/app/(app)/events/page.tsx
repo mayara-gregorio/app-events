@@ -4,11 +4,16 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 
 import { EventCard, type Event } from "@/components/event-card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function EventDetailsPage() {
-  const [events, setEvents] = useState<Event[]>([])
+type MyEvent = Event & {
+  _count: { registrations: number }
+}
+
+export default function MyEventsPage() {
+  const [events, setEvents] = useState<MyEvent[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -24,9 +29,7 @@ export default function EventDetailsPage() {
 
         setEvents(data.events)
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Erro ao carregar eventos.",
-        )
+        setError(err instanceof Error ? err.message : "Erro ao carregar eventos.")
       } finally {
         setIsLoading(false)
       }
@@ -41,9 +44,7 @@ export default function EventDetailsPage() {
         <div>
           <h1 className="text-3xl font-bold text-[#10264D]">Meus eventos</h1>
           <p className="text-sm text-muted-foreground">
-            {isLoading
-              ? "Carregando..."
-              : `${events.length} evento(s) cadastrado(s)`}
+            {isLoading ? "Carregando..." : `${events.length} evento(s) cadastrado(s)`}
           </p>
         </div>
 
@@ -72,9 +73,7 @@ export default function EventDetailsPage() {
 
       {!isLoading && !error && events.length === 0 && (
         <div className="rounded-xl border border-dashed p-12 text-center">
-          <p className="text-muted-foreground">
-            Você ainda não criou nenhum evento.
-          </p>
+          <p className="text-muted-foreground">Você ainda não criou nenhum evento.</p>
           <Button
             nativeButton={false}
             render={<Link href="/events/create" />}
@@ -88,13 +87,16 @@ export default function EventDetailsPage() {
 
       {!isLoading && events.length > 0 && (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
-            <div key={event.id}>
+          {events.map((event) => {
+            const total = event._count.registrations
+            return (
+              <div key={event.id} className="space-y-2">
                 <Link href={`/events/${event.id}`}>
-                <EventCard event={event} />
+                  <EventCard event={event} total={total} />
                 </Link>
-            </div>
-          ))}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

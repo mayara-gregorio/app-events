@@ -24,7 +24,7 @@ export function formatDate(date: string) {
   })
 }
 
-export function EventCard({ event }: { event: Event }) {
+export function EventCard({ event, total }: { event: Event; total?: number }) {
   const today = new Date().toISOString().slice(0, 10)
   const isUpcoming = event.date.slice(0, 10) >= today
 
@@ -39,9 +39,16 @@ export function EventCard({ event }: { event: Event }) {
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <CardTitle>{event.title}</CardTitle>
-          <Badge variant={isUpcoming ? "default" : "secondary"}>
-            {isUpcoming ? "Próximo" : "Realizado"}
-          </Badge>
+          <div className="flex gap-2">
+            <Badge variant={isUpcoming ? "default" : "secondary"}>
+              {isUpcoming ? "Próximo" : "Realizado"}
+            </Badge>
+            {total !== undefined && (
+              <Badge variant="secondary">
+                {total} {total === 1 ? "inscrito" : "inscritos"}
+              </Badge>
+            )}
+          </div>
         </div>
         <CardDescription className="line-clamp-3">
           {event.description}

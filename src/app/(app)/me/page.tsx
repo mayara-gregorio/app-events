@@ -1,10 +1,7 @@
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import ProfileForm from "@/components/profile-form"
 
@@ -44,7 +41,6 @@ export default async function MePage() {
 
     return (
         <main className="mx-auto max-w-3xl space-y-6 p-6">
-            {/* Topo com os dados do usuário */}
             <Card>
                 <CardHeader className="flex flex-row items-center gap-4">
                     <Avatar className="h-16 w-16">
@@ -68,35 +64,6 @@ export default async function MePage() {
             </Card>
 
             <ProfileForm name={userCurrent.name} email={userCurrent.email} />
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Meus eventos</CardTitle>
-                    <CardDescription>Eventos que você criou</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    {meusEventos.length === 0 && (
-                        <p className="text-sm text-muted-foreground">Você ainda não criou nenhum evento.</p>
-                    )}
-
-                    {meusEventos.map((evento) => (
-                        <div key={evento.id} className="flex items-center justify-between rounded-lg border p-4">
-                            <div>
-                                <p className="font-medium">{evento.title}</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {new Date(evento.date).toLocaleDateString("pt-BR", { timeZone: "UTC" })} · {evento.location}
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Badge variant="secondary">{evento._count.registrations} inscritos</Badge>
-                                <Button  size="sm" variant="outline">
-                                    <Link href={`/events/${evento.id}/inscritos`}>Ver inscritos</Link>
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
         </main>
     )
 }
