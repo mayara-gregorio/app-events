@@ -22,17 +22,8 @@ function getSecret() {
  
 export async function POST(request: Request) {
   try {
-    let body: unknown
-    try {
-      body = await request.json()
-    } catch {
-      return NextResponse.json(
-        { message: "Corpo da requisição inválido." },
-        { status: 400 },
-      )
-    }
-
-    const parsed = loginSchema.safeParse(body)
+    const { email, password } = await request.json()
+    const parsed = loginSchema.safeParse({ email, password })
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -41,7 +32,6 @@ export async function POST(request: Request) {
       )
     }
 
-    const { email, password } = parsed.data
     const normalizedEmail = email.toLowerCase()
 
     const existingUser = await prisma.user.findUnique({

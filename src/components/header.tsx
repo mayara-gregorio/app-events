@@ -26,6 +26,9 @@ export function Header() {
             <Link href="/registrations" className="rounded-md border border-[#10264D] bg-transparent px-4 py-2 text-[#10264D] hover:bg-[#10264D]/10">
               Minhas Inscrições
             </Link>
+            <Link href="/login" className="rounded-md bg-[#10264D] px-4 py-2 text-white hover:bg-[#10264D]/90">
+              <User/>
+            </Link>
             </>
           )}
           {user && (
